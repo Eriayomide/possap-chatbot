@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POSSAP Chatbot - Amina Support Assistant</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .chat-container { width: 90%; max-width: 600px; height: 90vh; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; overflow: hidden; }
+        .chat-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .avatar-container { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(255, 255, 255, 0.3); background: white; display: flex; align-items: center; justify-content: center; }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 20px; font-weight: bold; }
+        .header-info h1 { font-size: 18px; font-weight: 600; margin-bottom: 3px; }
+        .header-info p { font-size: 12px; opacity: 0.9; }
+        .connection-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #4ade80; margin-right: 5px; animation: pulse 2s infinite; }
+        .connection-status.disconnected { background: #ef4444; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .reset-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .reset-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        .messages-container { flex: 1; overflow-y: auto; padding: 20px; background: #f8f9fa; }
+        .message { margin-bottom: 20px; display: flex; gap: 12px; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message.user { flex-direction: row-reverse; }
+        .bot-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: white; border: 2px solid #e5e7eb; display: flex; align-items: center; justify-content: center; margin-top: 5px; }
+        .bot-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .bot-avatar-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 16px; font-weight: bold; }
+        .message-content { max-width: 70%; }
+        .message.bot .message-content { background: white; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+        .message.user .message-content { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 16px; border-radius: 12px; }
+        .message-text { line-height: 1.5; word-wrap: break-word; }
+        .message-text a { color: inherit; text-decoration: underline; font-weight: 500; transition: opacity 0.2s; }
+        .message.bot .message-text a { color: #667eea; }
+        .message.user .message-text a { color: white; opacity: 0.95; }
+        .message-text a:hover { opacity: 0.8; }
+        .message-content strong { font-weight: 600; color: #1a1a1a; }
+        .timestamp { font-size: 11px; color: #9ca3af; margin-top: 5px; }
+        .message.user .timestamp { text-align: right; color: rgba(255, 255, 255, 0.7); }
+        .input-container { padding: 20px; background: white; border-top: 1px solid #e5e7eb; display: flex; gap: 12px; align-items: center; }
+        #userInput { flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 14px; outline: none; transition: border-color 0.3s; }
+        #userInput:focus { border-color: #667eea; }
+        #userInput:disabled { background: #f9fafb; cursor: not-allowed; }
+        #sendButton { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; }
+        #sendButton:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        #sendButton:disabled { opacity: 0.5; cursor: not-allowed; }
+        .typing-indicator { display: none; padding: 12px 16px; background: white; border-radius: 12px; width: fit-content; }
+        .typing-indicator.active { display: block; }
+        .typing-indicator span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; margin: 0 2px; animation: typing 1.4s infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-10px); } }
+        .messages-container::-webkit-scrollbar { width: 6px; }
+        .messages-container::-webkit-scrollbar-track { background: #f1f1f1; }
+        .messages-container::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+        .messages-container::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="avatar-container">
+                    <img src="https://storage.googleapis.com/possap-chatbot-assets/amina_avatar.png" alt="Amina Avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="avatar-fallback" style="display: none;">A</div>
+                </div>
+                <div class="header-info">
+                    <h1>Amina - POSSAP Support</h1>
+                    <p><span class="connection-status" id="connection-status"></span><span id="status-text">Online</span></p>
+                </div>
+            </div>
+            <button class="reset-btn" onclick="resetChat()">New Chat</button>
+        </div>
+        <div class="messages-container" id="messagesContainer"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8080' : window.location.origin;
+        const AVATAR_IMAGE = 'https://storage.googleapis.com/possap-chatbot-assets/amina_avatar.png';
+        let conversationId = localStorage.getItem('possap_conversation_id') || null;
+        let currentUserName = null;
+        function updateConnectionStatus(c) { const d = document.getElementById('connection-status'); const t = document.getElementById('status-text'); if (c) { d.classList.remove('disconnected'); t.textContent = 'Online'; } else { d.classList.add('disconnected'); t.textContent = 'Offline'; } }
+        function addMessage(txt, type = 'bot') { const m = document.getElementById('messagesContainer'); const d = document.createElement('div'); d.className = `message ${type}`; if (type === 'bot') { const a = document.createElement('div'); a.className = 'bot-avatar'; a.innerHTML = `<img src="${AVATAR_IMAGE}" alt="Amina" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="bot-avatar-fallback" style="display: none;">A</div>`; d.appendChild(a); } const c = document.createElement('div'); c.className = 'message-content'; const t = document.createElement('div'); t.className = 'message-text'; t.innerHTML = txt; const ts = document.createElement('div'); ts.className = 'timestamp'; ts.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); c.appendChild(t); c.appendChild(ts); d.appendChild(c); m.appendChild(d); m.scrollTop = m.scrollHeight; }
+        function showTypingIndicator() { const m = document.getElementById('messagesContainer'); const d = document.createElement('div'); d.className = 'message bot'; d.id = 'typingIndicator'; const a = document.createElement('div'); a.className = 'bot-avatar'; a.innerHTML = `<img src="${AVATAR_IMAGE}" alt="Amina" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="bot-avatar-fallback" style="display: none;">A</div>`; d.appendChild(a); const c = document.createElement('div'); c.className = 'message-content'; const i = document.createElement('div'); i.className = 'typing-indicator active'; i.innerHTML = '<span></span><span></span><span></span>'; c.appendChild(i); d.appendChild(c); m.appendChild(d); m.scrollTop = m.scrollHeight; }
+        function hideTypingIndicator() { const t = document.getElementById('typingIndicator'); if (t) t.remove(); }
+        async function restoreConversation() { if (!conversationId) { console.log('No existing conversation'); return false; } try { console.log('Restoring:', conversationId); const r = await fetch(`${API_BASE_URL}/get-conversation`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversation_id: conversationId }) }); const d = await r.json(); if (d.success && d.messages && d.messages.length > 0) { console.log('Restored', d.messages.length, 'messages'); currentUserName = d.user_name; document.getElementById('messagesContainer').innerHTML = ''; d.messages.forEach(msg => { if (msg.role === 'user') addMessage(msg.content, 'user'); else if (msg.role === 'assistant') addMessage(msg.content, 'bot'); }); return true; } return false; } catch (e) { console.error('Restore error:', e); return false; } }
+        async function sendMessage() { const inp = document.getElementById('userInput'); const btn = document.getElementById('sendButton'); const msg = inp.value.trim(); if (!msg) return; addMessage(msg, 'user'); inp.value = ''; inp.disabled = true; btn.disabled = true; showTypingIndicator(); try { const r = await fetch(`${API_BASE_URL}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, conversation_id: conversationId }) }); if (!r.ok) throw new Error(`HTTP error: ${r.status}`); const d = await r.json(); updateConnectionStatus(true); hideTypingIndicator(); if (d.conversation_id) { conversationId = d.conversation_id; localStorage.setItem('possap_conversation_id', conversationId); } if (d.user_name) currentUserName = d.user_name; addMessage(d.reply || d.raw_reply || "Sorry, I couldn't process that.", 'bot'); } catch (e) { console.error('Error:', e); updateConnectionStatus(false); hideTypingIndicator(); addMessage('Sorry, there was an error connecting to the server. Please try again.', 'bot'); } finally { inp.disabled = false; btn.disabled = false; inp.focus(); } }
+        async function resetChat() { if (!confirm('Are you sure you want to reset the chat?')) return; try { if (conversationId) await fetch(`${API_BASE_URL}/reset-session`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversation_id: conversationId }) }); localStorage.removeItem('possap_conversation_id'); conversationId = null; currentUserName = null; document.getElementById('messagesContainer').innerHTML = ''; addMessage("Hello! My name is Amina. I'm your POSSAP support assistant. How can I help you today?", 'bot'); } catch (e) { console.error('Reset error:', e); localStorage.removeItem('possap_conversation_id'); conversationId = null; document.getElementById('messagesContainer').innerHTML = ''; addMessage("Hello! My name is Amina. I'm your POSSAP support assistant. How can I help you today?", 'bot'); } }
+        async function testConnection() { try { const r = await fetch(`${API_BASE_URL}/health`); await r.json(); updateConnectionStatus(true); return true; } catch (e) { updateConnectionStatus(false); return false; } }
+        window.onload = async function() { const c = await testConnection(); if (c) { const r = await restoreConversation(); if (!r) setTimeout(() => addMessage("Hello! My name is Amina. I'm your POSSAP support assistant. How can I help you today?", 'bot'), 500); } console.log('Conversation ID:', conversationId || 'Will be generated'); console.log('API URL:', API_BASE_URL); };
+    </script>
+</body>
+</html>
