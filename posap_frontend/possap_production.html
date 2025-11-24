@@ -313,8 +313,8 @@
         <div class="header-left">
           <div class="avatar-container">
             <img
-              src="https://storage.googleapis.com/possap-chatbot-assets/amina_avatar.png"
-              alt="Amina Avatar"
+              src="https://storage.googleapis.com/vreg-chatbot-assets/ada_avatar.png"
+              alt="Ada Avatar"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             />
             <div class="avatar-fallback" style="display: none">A</div>
@@ -346,7 +346,7 @@
           ? "http://localhost:8080"
           : "http://164.92.167.87:8080";
       const AVATAR_IMAGE =
-        "https://storage.googleapis.com/possap-chatbot-assets/amina_avatar.png";
+        "https://storage.googleapis.com/vreg-chatbot-assets/ada_avatar.png";
       let conversationId =
         localStorage.getItem("possap_conversation_id") || null;
       let currentUserName = null;
@@ -368,7 +368,7 @@
         if (type === "bot") {
           const a = document.createElement("div");
           a.className = "bot-avatar";
-          a.innerHTML = `<img src="${AVATAR_IMAGE}" alt="Amina" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="bot-avatar-fallback" style="display: none;">A</div>`;
+          a.innerHTML = `<img src="${AVATAR_IMAGE}" alt="Ada" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="bot-avatar-fallback" style="display: none;">A</div>`;
           d.appendChild(a);
         }
         const c = document.createElement("div");
@@ -395,7 +395,7 @@
         d.id = "typingIndicator";
         const a = document.createElement("div");
         a.className = "bot-avatar";
-        a.innerHTML = `<img src="${AVATAR_IMAGE}" alt="Amina" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="bot-avatar-fallback" style="display: none;">A</div>`;
+        a.innerHTML = `<img src="${AVATAR_IMAGE}" alt="Ada" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="bot-avatar-fallback" style="display: none;">A</div>`;
         d.appendChild(a);
         const c = document.createElement("div");
         c.className = "message-content";
@@ -500,7 +500,7 @@
           currentUserName = null;
           document.getElementById("messagesContainer").innerHTML = "";
           addMessage(
-            "Hello! My name is Amina. I'm your POSSAP support assistant. How can I help you today?",
+            "Hello! My name is Amina. I'm your POSSAP support assistant.",
             "bot"
           );
         } catch (e) {
@@ -509,7 +509,7 @@
           conversationId = null;
           document.getElementById("messagesContainer").innerHTML = "";
           addMessage(
-            "Hello! My name is Amina. I'm your POSSAP support assistant. How can I help you today?",
+            "Hello! My name is Amina. I'm your POSSAP support assistant. ?",
             "bot"
           );
         }
@@ -533,7 +533,7 @@
             setTimeout(
               () =>
                 addMessage(
-                  "Hello! My name is Amina. I'm your POSSAP support assistant. How can I help you today?",
+                  "Hello! My name is Amina. I'm your POSSAP support assistant.",
                   "bot"
                 ),
               500
