@@ -118,27 +118,27 @@ conversation_manager = ConversationManager()
 # Initialize SentenceTransformer
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# POSSAP Knowledge Base - ACTUAL FAQs from Official Document
+# POSSAP Knowledge Base - UPDATED FAQs from Revised Official Document
 possap_faqs = [
-    # Registration and Account Creation
+    # Registration and Account Creation (Q1-Q4, Q22-Q23)
     {
         "question": 'I tried to use my NIN/BVN to sign up on the POSSAP portal and got an error saying "something went wrong, please contact POSSAP admin"',
-        "answer": 'This means your NIN or BVN record does not have a phone number linked to it. If using NIN, visit the nearest NIMC office to update your record with your current phone number. If using BVN, visit your bank to update your phone number in your BVN details.',
+        "answer": 'This means your NIN or BVN record does not have a phone number linked to it. If using NIN, visit the nearest NIMC office to update your record with your current phone number. If using BVN, visit your bank to update your phone number in your BVN details. After updating, contact POSSAP to have your information revalidated in the system.',
         "category": 'registration'
     },
     {
         "question": 'The name arrangement I see on the POSSAP site is different from what appears on my passport',
-        "answer": 'POSSAP retrieves information such as your name, phone number etc. directly from the National Identify Management Commission NIMC or Nigeria Inter-bank Settlement System (NIBSS). If your name appears incorrectly, kindly visit the NIMC head office in your state of residence, or the nearest branch of your bank to update the details of your National identification Number (NIN) or your Bank verification Number (BVN) respectively before continuing your registration.',
+        "answer": 'POSSAP pulls your name directly from NIMC or your bank. Just visit your nearest NIMC office or your bank branch to update how your name appears on your BVN/NIN and contact POSSAP at info@possap.gov.ng for revalidation to proceed with your application.',
         "category": 'registration'
     },
     {
         "question": 'The phone number or email shown on the POSSAP site is my old one. How can I change it?',
-        "answer": 'POSSAP retrieves information such as your name, phone number etc. directly from the National Identify Management Commission NIMC or Nigeria Inter-bank Settlement System (NIBSS). If your details appear incorrectly, kindly visit the NIMC head office in your state of residence, or the nearest branch of your bank to update the details of your National identification Number (NIN) or your Bank verification Number (BVN) respectively before continuing your registration.',
+        "answer": 'POSSAP retrieves information such as your name, phone number etc. directly from the National Identify Management Commission NIMC or Nigeria Inter-bank Settlement System (NIBSS). If your name appears incorrectly, kindly visit the NIMC head office in your state of residence, or the nearest branch of your bank to update the details of your National identification Number (NIN) or your Bank verification Number (BVN) respectively, reach out to POSSAP with your NIN and updated information for revalidation, before continuing your registration.',
         "category": 'registration'
     },
     {
-        "question": 'I\'m unable to verify my account even after receiving multiple verification codes',
-        "answer": 'Please contact POSSAP Customer Service: Phone: 02018884040 and/or email: info@possap.gov.ng',
+        "question": "I'm unable to verify my account even after receiving multiple verification codes",
+        "answer": 'Please contact POSSAP Customer Service with your NIN/BVN, phone number and email address via: Phone: 02018884040 and/or email: info@possap.gov.ng',
         "category": 'registration'
     },
     {
@@ -152,10 +152,10 @@ possap_faqs = [
         "category": 'registration'
     },
     
-    # Tinted Glass Permit Related Issues
+    # Tinted Glass Permit Related Issues (Q5-Q7, Q18-Q19, Q24)
     {
-        "question": 'I made payment for VVS and was debited, but it didn\'t reflect on my invoice',
-        "answer": 'Kindly take note of the invoice number and contact POSSAP Customer Care with the details for assistance: Phone: 02018884040 and/or email: info@possap.gov.ng',
+        "question": "I made payment for VVS and was debited, but it didn't reflect on my invoice",
+        "answer": 'Kindly contact POSSAP Customer Care with your invoice number, Vehicle Identification Number (VIN) and Proof of payment for assistance via the following contact information: Phone: 02018884040 and/or email: info@possap.gov.ng',
         "category": 'tinted_glass'
     },
     {
@@ -180,13 +180,13 @@ possap_faqs = [
     },
     {
         "question": 'Why am I redirected to another site for Vehicle Verification, what is the Vehicle verification System about?',
-        "answer": 'The Vehicle Verification System (VVS) is an external platform integrated with POSSAP. It serves as a Global Vehicle Identification Number (VIN) database that POSSAP utilizes to securely and in real time retrieve comprehensive vehicle information from the global database, thereby ensuring accurate capture of applicants\' vehicle details.',
+        "answer": "The Vehicle Verification System (VVS) is an external platform integrated with POSSAP. It serves as a Global Vehicle Identification Number (VIN) database that POSSAP utilizes to securely and in real time retrieve comprehensive vehicle information from the global database, thereby ensuring accurate capture of applicants' vehicle details.",
         "category": 'tinted_glass'
     },
     
-    # Police Character Certificate
+    # Police Character Certificate (Q8, Q17)
     {
-        "question": 'I am applying from the diaspora. What proof should I upload to show I\'m not in Nigeria?',
+        "question": "I am applying from the diaspora. What proof should I upload to show I'm not in Nigeria?",
         "answer": 'You can upload any valid supporting document, such as: Official Diaspora Proof of residence document, Utility bills (water or electricity), Bank statement, Lease agreement or other proof of residence abroad, Drivers license, Work permit.',
         "category": 'character_certificate'
     },
@@ -196,9 +196,9 @@ possap_faqs = [
         "category": 'character_certificate'
     },
     
-    # Facial Verification Issues
+    # Facial Verification Issues (Q9, Q21)
     {
-        "question": 'The facial verification process isn\'t capturing my face after several attempts',
+        "question": "The facial verification process isn't capturing my face after several attempts",
         "answer": 'Try the following: Use a Computer (Desktop/Laptop) instead of a mobile device, Ensure adequate lighting in the room of capture, Use your most recent passport photo for upload. If the issue persists, contact POSSAP Customer Service: Phone: 02018884040 and/or email: info@possap.gov.ng',
         "category": 'verification'
     },
@@ -208,7 +208,7 @@ possap_faqs = [
         "category": 'verification'
     },
     
-    # Payment-Related Issues
+    # Payment-Related Issues (Q10-Q13, Q16, Q25)
     {
         "question": 'Can I make payment for a diaspora application in Naira?',
         "answer": 'Diaspora payments must be made in dollars (or the corresponding currency of your host country), and for the exact amount displayed on the POSSAP portal.',
@@ -230,8 +230,8 @@ possap_faqs = [
         "category": 'payment'
     },
     {
-        "question": 'I made payment on my generated invoice, but it didn\'t reflect',
-        "answer": 'Contact POSSAP Customer Service with your payment receipt: Phone: 02018884040 and/or email: info@possap.gov.ng. If payment hasn\'t reflected on POSSAP\'s end, you will be advised to contact your bank to lodge a complaint.',
+        "question": "I made payment on my generated invoice, but it didn't reflect",
+        "answer": "Contact POSSAP Customer Service with your payment receipt and invoice number: Phone: 02018884040 and/or email: info@possap.gov.ng. If payment hasn't reflected on POSSAP's end, you will be advised to contact your bank to lodge a complaint.",
         "category": 'payment'
     },
     {
@@ -240,10 +240,10 @@ possap_faqs = [
         "category": 'payment'
     },
     
-    # Application Status and General
+    # Application Status (Q20)
     {
         "question": 'My application has been pending for over 2 weeks now, what do I do to get it approved?',
-        "answer": 'Kindly reach out to the POSSAP support team via Phone: 02018884040 and/or email: info@possap.gov.ng to get clarification and resolution on the issue.',
+        "answer": 'Kindly reach out to the POSSAP support team via Phone: 02018884040 and/or email: info@possap.gov.ng with your invoice number or file number to get clarification and resolution on the issue.',
         "category": 'application_status'
     }
 ]
