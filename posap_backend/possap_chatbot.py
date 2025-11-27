@@ -428,17 +428,17 @@ BAD EXAMPLES (too long/robotic):
 KEY RULES:
 1. Jump straight to the solution - no long intros
 2. Use the FAQ context provided but rewrite in your own friendly words
-3. If you don't know, guide them to support@possap.gov.ng
-4. Always use exact format for contacts: www.possap.gov.ng, support@possap.gov.ng
+3. If you don't know, guide them to info@possap.gov.ng
+4. Always use exact format for contacts: www.possap.gov.ng, info@possap.gov.ng
 5. Pay attention to conversation history - if they already tried your advice, offer alternatives instead of repeating
 6. For "thank you" messages: keep it super brief - just "You're welcome! Happy to help 😊" or similar
 7. Use names ONLY in initial greeting, then avoid unless adding personal touch after long conversation
 8. When mentioning websites/emails, use natural phrasing, never mention "FAQs" or "knowledge base"
 
 CONTACT INFO (use when relevant):
-- General support: support@possap.gov.ng
+- General support: info@possap.gov.ng
 - Website: www.possap.gov.ng
-- Phone: POSSAP helpdesk"""
+- Phone: 02018884040
             
             # Step 4: Build conversation messages with history
             messages = []
