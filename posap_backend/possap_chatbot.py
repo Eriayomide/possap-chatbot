@@ -439,6 +439,7 @@ CONTACT INFO (use when relevant):
 - General support: info@possap.gov.ng
 - Website: www.possap.gov.ng
 - Phone: 02018884040
+"""
             
             # Step 4: Build conversation messages with history
             messages = []
